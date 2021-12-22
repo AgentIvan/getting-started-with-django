@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from .models import Lead
+
 # from django.http import HttpResponse
 
 
@@ -8,4 +10,8 @@ def home_page(request):
 
 
 def second_page(request):
-    return render(request, "second_page.html")
+    leads = Lead.objects.all()
+    context = {
+        "leads": leads,
+    }
+    return render(request, "second_page.html", context)

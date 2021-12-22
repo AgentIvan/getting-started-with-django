@@ -7,6 +7,12 @@
   <title>Second Page</title>
 </head>
 <body>
-  Second Page
+  <h1>Hello World</h1>
+  <P>This is the second page</P>
+  <ul>
+    {% for lead in leads %}
+    <li>{{ lead }}</li>
+    {% endfor %}
+  </ul>
 </body>
 </html>
