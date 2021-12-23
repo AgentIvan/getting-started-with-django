@@ -1,11 +1,8 @@
 from django.contrib import admin
 from django.urls import path
 
-from leads.views import home_page, second_page
+from .views import lead_list, lead_detail
 
 app_name = "leads"
 
-urlpatterns = [
-    path("", home_page),
-    path("all/", second_page),
-]
+urlpatterns = [path("", lead_list), path("<pk>/", lead_detail)]

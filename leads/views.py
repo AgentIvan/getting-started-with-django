@@ -2,16 +2,18 @@ from django.shortcuts import render
 
 from .models import Lead
 
-# from django.http import HttpResponse
 
-
-def home_page(request):
-    return render(request, "leads/home_page.html")
-
-
-def second_page(request):
+def lead_list(request):
     leads = Lead.objects.all()
     context = {
         "leads": leads,
     }
-    return render(request, "second_page.html", context)
+    return render(request, "leads/lead_list.html", context)
+
+
+def lead_detail(request, pk):
+    lead = Lead.objects.get(id=pk)
+    context = {
+        "lead": lead,
+    }
+    return render(request, "leads/lead_detail.html", context)
