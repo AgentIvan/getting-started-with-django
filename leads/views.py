@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
 
 from .models import Lead, Agent
-from .forms import LeadForm
+from .forms import LeadForm, LeadModelForm
+
+
+def home_page(request):
+    return render(request, "home_page.html")
 
 
 def lead_list(request):
@@ -20,10 +24,22 @@ def lead_detail(request, pk):
     return render(request, "leads/lead_detail.html", context)
 
 
-def lead_create(request):
-    form = LeadForm()
+def lead_create2(request):
+    form = LeadModelForm()
     if request.method == "POST":
-        form = LeadForm(request.POST)
+        form = LeadModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/leads")
+
+    context = {"form": form}
+    return render(request, "leads/lead_create.html", context)
+
+
+def lead_create(request):
+    form = LeadModelForm()
+    if request.method == "POST":
+        form = LeadModelForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data["first_name"]
             last_name = form.cleaned_data["last_name"]
