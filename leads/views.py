@@ -51,46 +51,52 @@ def lead_update(request, pk):
     return render(request, "leads/lead_update.html", context)
 
 
-def lead_update2(request, pk):
+def lead_delete(request, pk):
     lead = Lead.objects.get(id=pk)
-    form = LeadModelForm()
-    if request.method == "POST":
-        form = LeadModelForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            age = form.cleaned_data["age"]
-            agent = Agent.objects.first()
-
-            lead.first_name = first_name
-            lead.last_name = last_name
-            lead.age = age
-            lead.agent = agent
-            lead.save()
-            return redirect("/leads")
-    context = {
-        "lead": lead,
-        "form": form,
-    }
-    return render(request, "leads/lead_update.html", context)
+    lead.delete()
+    return redirect("/leads")
 
 
-def lead_create2(request):
-    form = LeadModelForm()
-    if request.method == "POST":
-        form = LeadModelForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            age = form.cleaned_data["age"]
-            agent = Agent.objects.first()
-            Lead.objects.create(
-                first_name=first_name,
-                last_name=last_name,
-                age=age,
-                agent=agent,
-            )
-            return redirect("/leads")
+# def lead_update2(request, pk):
+#     lead = Lead.objects.get(id=pk)
+#     form = LeadModelForm()
+#     if request.method == "POST":
+#         form = LeadModelForm(request.POST)
+#         if form.is_valid():
+#             first_name = form.cleaned_data["first_name"]
+#             last_name = form.cleaned_data["last_name"]
+#             age = form.cleaned_data["age"]
+#             agent = Agent.objects.first()
 
-    context = {"form": form}
-    return render(request, "leads/lead_create.html", context)
+#             lead.first_name = first_name
+#             lead.last_name = last_name
+#             lead.age = age
+#             lead.agent = agent
+#             lead.save()
+#             return redirect("/leads")
+#     context = {
+#         "lead": lead,
+#         "form": form,
+#     }
+#     return render(request, "leads/lead_update.html", context)
+
+
+# def lead_create2(request):
+#     form = LeadModelForm()
+#     if request.method == "POST":
+#         form = LeadModelForm(request.POST)
+#         if form.is_valid():
+#             first_name = form.cleaned_data["first_name"]
+#             last_name = form.cleaned_data["last_name"]
+#             age = form.cleaned_data["age"]
+#             agent = Agent.objects.first()
+#             Lead.objects.create(
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 age=age,
+#                 agent=agent,
+#             )
+#             return redirect("/leads")
+
+#     context = {"form": form}
+#     return render(request, "leads/lead_create.html", context)
