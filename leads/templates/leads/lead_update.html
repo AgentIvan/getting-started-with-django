@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Lead Page</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}
+  Lead Update
+{% endblock title %}
+
+{% block content %}
   <a href="{% url 'leads:lead-list' %}">All Leads</a>
+  <br />
   <a href="{% url 'leads:lead-detail' lead.pk %}">Go back to {{ lead.first_name }} {{ lead.last_name }}</a>
   <hr />
   <h1>Update lead {{ lead.first_name }} {{ lead.last_name }}</h1>
@@ -16,5 +15,4 @@
     {{ form.as_p }}
     <button type="submit">Submit</button>
   </form>
-</body>
-</html>
+{% endblock content %}
