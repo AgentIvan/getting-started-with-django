@@ -27,7 +27,7 @@ class Agent(models.Model):
     organisation = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return self.user.email
+        return self.user.email + " email"
 
 
 class Lead(models.Model):
