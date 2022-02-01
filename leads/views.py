@@ -1,11 +1,12 @@
+from agents.mixins import OrganisorAndLoginRequiredMixin
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import generic
 
-from agents.mixins import OrganisorAndLoginRequiredMixin
-from .forms import CustomUserCreationForm, LeadModelForm, LeadAssignAgentForm
+from .forms import CustomUserCreationForm, LeadAssignAgentForm, LeadModelForm
 from .models import Lead
 
 
@@ -48,7 +49,7 @@ class LeadListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
     def get_context_data(self, **kwargs) -> dict:
-        context = super(LeadListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         user = self.request.user
         if user.is_organisor:
             queryset = Lead.objects.filter(
@@ -100,13 +101,17 @@ class LeadCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
 
     def form_valid(self, form):
         agent = form.cleaned_data["agent"]
+        lead = form.save(commit=False)
+        lead.organisation = self.request.user.userprofile
+        lead.save()
         send_mail(
             subject="A lead has been created",
             message="Go to the site to see the new lead",
             from_email="test@test.com",
             recipient_list=[agent or "test2@test.com"],
         )
-        return super(LeadCreateView, self).form_valid(form)
+        messages.success(self.request, "You have successfully created a lead")
+        return super().form_valid(form)
 
 
 def lead_create(request):
@@ -173,7 +178,7 @@ class LeadAssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
     form_class = LeadAssignAgentForm
 
     def get_form_kwargs(self, **kwargs):
-        kwargs = super(LeadAssignAgentView, self).get_form_kwargs(**kwargs)
+        kwargs = super().get_form_kwargs(**kwargs)
         kwargs.update({"request": self.request})
         return kwargs
 

@@ -43,7 +43,7 @@ class AgentCreateView(OrganisorAndLoginRequiredMixin, generic.CreateView):
             from_email="admin@test.com",
             recipient_list=[user.email],
         )
-        return super(AgentCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class AgentDetailView(OrganisorAndLoginRequiredMixin, generic.DetailView):

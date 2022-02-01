@@ -39,5 +39,5 @@ class LeadAssignAgentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         request = kwargs.pop("request")
         agents = Agent.objects.filter(organisation=request.user.userprofile)
-        super(LeadAssignAgentForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["agent"].queryset = agents
