@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views import generic
 
 from agents.mixins import OrganisorAndLoginRequiredMixin
-from .forms import CustomUserCreationForm, LeadModelForm
+from .forms import CustomUserCreationForm, LeadModelForm, LeadAssignAgentForm
 from .models import Lead
 
 
@@ -166,6 +166,26 @@ def lead_delete(request, pk):
     lead = Lead.objects.get(id=pk)
     lead.delete()
     return redirect("/leads")
+
+
+class LeadAssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
+    template_name = "leads/lead_assign_agent.html"
+    form_class = LeadAssignAgentForm
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(LeadAssignAgentView, self).get_form_kwargs(**kwargs)
+        kwargs.update({"request": self.request})
+        return kwargs
+
+    def get_success_url(self) -> str:
+        return reverse("leads:lead-list")
+
+    def form_valid(self, form):
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id=self.kwargs.get("pk"))
+        lead.agent = agent
+        lead.save()
+        return super().form_valid(form)
 
 
 # def lead_update2(request, pk):
