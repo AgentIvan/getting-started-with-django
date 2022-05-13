@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views import generic
 
 from .forms import CustomUserCreationForm, LeadAssignAgentForm, LeadModelForm
-from .models import Lead
+from .models import Category, Lead
 
 
 class SignupView(generic.CreateView):
@@ -191,6 +191,42 @@ class LeadAssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
         lead.agent = agent
         lead.save()
         return super().form_valid(form)
+
+
+class CategoryListView(LoginRequiredMixin, generic.ListView):
+    template_name = "leads/category_list.html"
+    context_object_name = "categories"
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # initial queryset of leads for the entire organisation
+        if user.is_organisor:
+            queryset = Lead.objects.filter(
+                organisation=user.userprofile,
+                category__isnull=True,
+            )
+        else:
+            queryset = Lead.objects.filter(
+                organisation=user.agent.organisation,
+                category__isnull=True,
+            )
+        context.update({"unussigned_lead_count": queryset.count()})
+        return context
+
+    def get_queryset(self):
+        user = self.request.user
+        # initial queryset of leads for the entire organisation
+        if user.is_organisor:
+            queryset = Category.objects.filter(
+                organisation=user.userprofile,
+            )
+        else:
+            queryset = Category.objects.filter(
+                organisation=user.agent.organisation,
+            )
+        return queryset
 
 
 # def lead_update2(request, pk):
